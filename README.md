@@ -7,9 +7,9 @@ It builds on NumPy and SciPy to provide physics-specific tools across mechanics,
 electromagnetism, quantum mechanics, and more — with every numerical result
 validated against a known analytic solution wherever one exists.
 
-> 🚧 **Status: early development.** The mechanics module (projectile motion)
-> is implemented and tested. More domains are actively being added — see
-> [Roadmap](#roadmap).
+> 🚧 **Status: early development.** Mechanics (projectile motion) and 
+> Electromagnetism (statics & circuits) are implemented and tested.
+> More domains are actively being added — see [Roadmap](#roadmap).
 
 ## Why PhysPy?
 
@@ -33,8 +33,10 @@ pip install -e ".[dev]"
 
 ## Quickstart
 
+### Mechanics: Projectile Motion
+
 ```python
-from physpy.mechanics.kinematics import Projectile
+from physpy import Projectile
 
 # A baseball launched at 30 m/s, 45 degrees, with real air resistance
 baseball = Projectile(
@@ -47,15 +49,46 @@ baseball = Projectile(
 
 sol = baseball.solve()
 print(f"Range with drag: {sol['x'][-1]:.2f} m")
-print(f"Range without drag (textbook formula): {baseball.range_analytic():.2f} m")
+print(f"Range without drag: {baseball.range_analytic():.2f} m")
 
-baseball.plot()  # visualizes both trajectories for comparison
+baseball.plot()  # visualizes trajectories
 ```
 
-Run the full example:
+### Electromagnetism: Electric Fields
+
+```python
+from physpy import PointCharge, ElectricField
+
+# Two charges: +1 µC and -1 µC
+q1 = PointCharge(q=1e-6, x=-0.05, y=0)
+q2 = PointCharge(q=-1e-6, x=0.05, y=0)
+
+field = ElectricField(charges=[q1, q2])
+field.plot()  # visualizes field and equipotential lines
+```
+
+### Electromagnetism: DC Circuits
+
+```python
+from physpy import VoltageSource, Resistor, Circuit
+
+circuit = Circuit()
+circuit.add_node(0, gnd=True)
+circuit.add_node(1)
+circuit.add_connection(0, 1, VoltageSource('V1', voltage=10.0))
+circuit.add_connection(1, 0, Resistor('R1', resistance=1000.0))
+
+solution = circuit.solve_dc()
+print(f"V(node 1) = {solution['node_voltages'][1]:.2f} V")
+print(f"I(R1) = {solution['branch_currents']['R1']*1000:.2f} mA")
+```
+
+Run the examples:
 
 ```bash
 python examples/projectile_demo.py
+python examples/electric_field_demo.py
+python examples/circuit_demo.py
 ```
 
 ## Running tests
@@ -71,18 +104,27 @@ regardless of the exact parameters (e.g. "adding drag can only reduce range").
 
 ## Roadmap
 
+### ✅ Completed
 - [x] **Mechanics**: projectile motion (analytic + numerical, with drag)
+- [x] **Electromagnetism**: static field visualization (point charges, dipoles)
+- [x] **Electromagnetism**: DC circuit solver (Kirchhoff's laws, MNA)
+
+### 📋 Planned
 - [ ] **Mechanics**: N-body gravitational simulation
-- [ ] **Electromagnetism**: static field visualization (point charges, dipoles)
-- [ ] **Electromagnetism**: circuit solver
+- [ ] **Electromagnetism**: AC circuit analysis (frequency-dependent)
+- [ ] **Electromagnetism**: electromagnetic wave propagation
 - [ ] **Quantum mechanics**: 1D time-independent Schrödinger equation solver
 - [ ] **Quantum mechanics**: wavepacket time evolution / animation
 - [ ] **Particle physics**: relativistic kinematics, decay simulations
+- [ ] **Thermodynamics**: ideal gas simulations, phase diagrams
 
 ## Contributing
 
-Issues and pull requests are welcome once the initial modules stabilize.
-See `CONTRIBUTING.md` (coming soon) for guidelines.
+Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
+- Code style and testing
+- Physics validation requirements
+- Adding new modules and domains
+- Documenting and visualizing results
 
 ## License
 
