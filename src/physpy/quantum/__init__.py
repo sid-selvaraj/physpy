@@ -15,12 +15,19 @@ from physpy.quantum.schrodinger_1d import (
     FiniteSquareWell, CustomPotential
 )
 from physpy.quantum.schrodinger_1d_timedep import SchrodingerSolverTimeDep1D
+from physpy.quantum.schrodinger_2d import (
+    SchrodingerSolver2D, ParticleInBox2D, HarmonicOscillator2D, CustomPotential2D
+)
 
 __all__ = [
     "SchrodingerSolver1D",
     "SchrodingerSolverTimeDep1D",
+    "SchrodingerSolver2D",
     "ParticleInABox",
     "QuantumHarmonicOscillator",
     "FiniteSquareWell",
     "CustomPotential",
+    "ParticleInBox2D",
+    "HarmonicOscillator2D",
+    "CustomPotential2D",
 ]
